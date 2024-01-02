@@ -9,6 +9,9 @@ Also download FFMpeg from [here](https://ffmpeg.org/download.html)
 
 
 ## DeepSORT
+Please download my deepSORT model via Google Drive: https://drive.google.com/file/d/15sTG4Nka_JzrCweggssy701apw3bjReL/view?usp=sharing
+(since our GREATEST github does not want to let me upload ^^) 
+
 To activate camera tracking
 ```
 cd yolo_tracking
