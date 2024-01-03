@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>stream page</title>
+    <!-- <link rel="shortcut icon" href="{{url_for('static', filename='favicon.ico')}}"> -->
+    <link rel="stylesheet" href="https://unpkg.com/video.js@7/dist/video-js.min.css"/> ## 基本 CSS 樣式
+    <link rel="stylesheet" href="https://unpkg.com/@videojs/themes@1/dist/sea/index.css"/> ## bar 樣式
+
+</head>
+<body>
+    <div id ='player'>
+        <!-- CSS  -->
+        <!-- <link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet"> -->
+        <video id="my_video_1" class="video-js vjs-fluid vjs-theme-sea" width="352" height="288"  controls preload="auto" autoplay>
+            <source src="/static/demo/playlist.m3u8" type="application/x-mpegURL">
+        </video>
+        <!-- JS code -->
+        <!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+        <script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>  
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+        <script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
+
+        <script>
+        var player = videojs('my_video_1');  ## <-- video id
+        player.play();
+        </script>
+        
+    </div>
+</body>
+</html>
+
