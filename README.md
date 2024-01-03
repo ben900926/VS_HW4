@@ -27,6 +27,6 @@ python track.py --source 0 --show-vid --save-vid --out inference/output
 
 ## JPEG streaming with ui
 '''
-python app.py --source <video path>
+python app.py --source video_path
 '''
 For camera, use --source 0
