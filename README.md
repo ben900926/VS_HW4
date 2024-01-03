@@ -26,7 +26,9 @@ python track.py --source 0 --show-vid --save-vid --out inference/output
 
 
 ## JPEG streaming with ui
-'''
+Put yolov5x_50.pt into yolo_tracking_streaming\yolov5\weights
+Put ckpt.t7 and original_ckpt.t7 into yolo_tracking_streaming\deep_sort_pytorch\deep_sort\deep\checkpoint
+```
 python app.py --source video_path
-'''
+```
 For camera, use --source 0
