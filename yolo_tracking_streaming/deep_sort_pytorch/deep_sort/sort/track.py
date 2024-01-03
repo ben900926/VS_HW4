@@ -82,6 +82,7 @@ class Track:
 
         ## record last seen position when active
         self.last_seen = []
+        self.is_display = True
 
     def to_tlwh(self):
         """Get current position in bounding box format `(top left x, top left y,
@@ -172,3 +173,6 @@ class Track:
     def is_deleted(self):
         """Returns True if this track is dead and should be deleted."""
         return self.state == TrackState.Deleted
+
+    def update_display(self):
+        self.is_display = not self.is_display

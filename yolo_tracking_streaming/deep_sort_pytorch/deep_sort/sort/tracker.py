@@ -6,6 +6,7 @@ from . import linear_assignment
 from . import iou_matching
 from .track import Track
 from . import nn_matching
+from typing import Tuple
 
 class Tracker:
     """
@@ -167,3 +168,13 @@ class Tracker:
             mean, covariance, self._next_id, self.n_init, self.max_age,
             detection.feature))
         self._next_id += 1
+
+    def update_display(self, x: float, y: float, size: Tuple[float, float]):
+        # update whether to display the track based on the coordinate
+        x_abs = x * size[1]
+        y_abs = y * size[0]
+        for track in self.tracks:
+            if track.is_confirmed:
+                x_min, y_min, x_max, y_max = track.to_tlbr()
+                if x_min <= x_abs <= x_max and y_min <= y_abs <= y_max:
+                    track.update_display()

@@ -22,6 +22,8 @@ class DeepSort(object):
             "cosine", max_cosine_distance, nn_budget)
         self.tracker = Tracker(
             metric, max_iou_distance=max_iou_distance, max_age=max_age, n_init=n_init)
+        
+        self.height, self.width = 0, 0
 
     def update(self, bbox_xywh, confidences, ori_img):
         self.height, self.width = ori_img.shape[:2]
@@ -40,12 +42,12 @@ class DeepSort(object):
 
         # deep_sort_pytorch.deep_sort.sort.track.Track object in tracks
         for track in self.tracker.tracks:
-            if not track.is_confirmed() or track.time_since_update > 1:
+            if not track.is_confirmed() or track.time_since_update > 1 or not track.is_display:
                 continue
             box = track.to_tlwh()
             x1, y1, x2, y2 = self._tlwh_to_xyxy(box)
             track_id = track.track_id
-            outputs.append(np.array([x1, y1, x2, y2, track_id], dtype=np.int))
+            outputs.append(np.array([x1, y1, x2, y2, track_id], dtype=np.int32))
         if len(outputs) > 0:
             outputs = np.stack(outputs, axis=0)
         return outputs
@@ -105,3 +107,6 @@ class DeepSort(object):
         else:
             features = np.array([])
         return features
+
+    def update_display(self, x: float, y: float):
+        self.tracker.update_display(x, y, (self.height, self.width))
