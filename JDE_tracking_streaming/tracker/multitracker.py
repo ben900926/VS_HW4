@@ -13,7 +13,7 @@ class STrack(BaseTrack):
     def __init__(self, tlwh, score, temp_feat, buffer_size=30):
 
         # wait activate
-        self._tlwh = np.asarray(tlwh, dtype=np.float)
+        self._tlwh = np.asarray(tlwh, dtype=float)
         self.kalman_filter = None
         self.mean, self.covariance = None, None
         self.is_activated = False
@@ -25,6 +25,7 @@ class STrack(BaseTrack):
         self.update_features(temp_feat)
         self.features = deque([], maxlen=buffer_size)
         self.alpha = 0.9
+        self.is_display = True
     
     def update_features(self, feat):
         feat /= np.linalg.norm(feat)
@@ -155,6 +156,9 @@ class STrack(BaseTrack):
 
     def __repr__(self):
         return 'OT_{}_({}-{})'.format(self.track_id, self.start_frame, self.end_frame)
+    
+    def update_display(self):
+        self.is_display = not self.is_display
 
 
 class JDETracker(object):
@@ -175,6 +179,7 @@ class JDETracker(object):
         self.max_time_lost = self.buffer_size
 
         self.kalman_filter = KalmanFilter()
+        self.width, self.height = 0, 0
 
     def update(self, im_blob, img0):
         """
@@ -196,6 +201,7 @@ class JDETracker(object):
                          The list contains information regarding the online_tracklets for the recieved image tensor.
 
         """
+        self.width, self.height = img0.shape[1], img0.shape[0]
 
         self.frame_id += 1
         activated_starcks = []      # for storing active tracks, for the current frame
@@ -338,7 +344,7 @@ class JDETracker(object):
         self.tracked_stracks, self.lost_stracks = remove_duplicate_stracks(self.tracked_stracks, self.lost_stracks)
 
         # get scores of lost tracks
-        output_stracks = [track for track in self.tracked_stracks if track.is_activated]
+        output_stracks = [track for track in self.tracked_stracks if track.is_activated and track.is_display]
 
         logger.debug('===========Frame {}=========='.format(self.frame_id))
         logger.debug('Activated: {}'.format([track.track_id for track in activated_starcks]))
@@ -347,6 +353,16 @@ class JDETracker(object):
         logger.debug('Removed: {}'.format([track.track_id for track in removed_stracks]))
         # print('Final {} s'.format(t5-t4))
         return output_stracks
+    
+    def update_display(self, x: float, y: float):
+    # update whether to display the track based on the coordinate
+        x_abs = x * self.width
+        y_abs = y * self.height
+        for track in self.tracked_stracks:
+            if track.is_activated:
+                x_min, y_min, x_max, y_max = track.tlbr
+                if x_min <= x_abs <= x_max and y_min <= y_abs <= y_max:
+                    track.update_display()
 
 def joint_stracks(tlista, tlistb):
     exists = {}
